@@ -1,0 +1,45 @@
+---
+title: "Planes"
+author: "Miroslav Bergam"
+date: "2/12/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readxl)
+library(tidyverse)
+library(janitor)
+```
+
+```{r}
+
+planes <- read_excel("statistic_id194941_american-customer-satisfaction-index-scores-for-airlines-in-the-us-1995-2019.xlsx", sheet = 2)
+
+planes <- planes %>%
+  pivot_longer(cols = c(`Alaska Airlines`:`U.S. Airways`), 
+               names_to = "Planes", 
+               values_to = "Ratings") %>%
+  mutate(Ratings = na_if(Ratings, 0)) %>%
+  filter(year > 2016) %>%
+  filter(Planes != "U.S. Airways")
+
+planes %>%
+  ggplot(aes(x = year, y = Ratings, group = Planes, color = Planes)) + 
+  geom_point() +
+  geom_line() + 
+  labs(x = "Year",
+       y = "Percentage of Satisfied Customers",
+       title = "Average Customer Satisfacation for U.S. Airlines (2017-2019)",
+       subtitle = "American has dipped below the all-airlines average in 2019",
+       caption = "Source: American Customer Satisfaction Index (ACSI) via Statista user E. Mazareanu")
+
+```
+
+```{r}
+
+rankings <- read_excel("scorecard.xlsx")
+
+```
+
+
